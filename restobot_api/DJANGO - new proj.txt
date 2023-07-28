@@ -1,0 +1,151 @@
+0. pip install django
+
+01. pip freeze > requirements.txt
+
+
+1.django-admin startproject NAME
+
+2.cd NAME
+
+3.python manage.py startapp APP
+
+4.NAME.settings.py add 'APP' in the installed_app
+
+
+5.in NAME.setings :
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'database',
+        'USER': 'postgres',
+        'PASSWORD': '123',
+        'HOST': 'localhost',
+        'PORT': '5432',
+    }
+}
+
+
+5.1 create database in pgAdmin
+
+5.2 pip install psycopg 
+
+5.python manage.py migrate
+
+
+6.APP.models
+class PPP (models.Model):
+...
+
+
+7.python manage.py makemigrations
+
+python manage.py migrate
+
+
+
+
+8.APP.views
+
+from.models import PPP
+
+def ABC (request/id):
+...
+context = ..
+return render(request, xxx.html, context)
+
+
+
+
+9.in the APP create a new folder templates
+xxx.html
+
+
+
+
+10.NAME.urls
+
+from APP.views import ABC
+
+path('blabla/id/<int:id>', ABC, name='blabla')
+
+
+
+BONUS:
+
+1.python manage.py createsuperuser
+
+
+
+2.in APP.admin:
+from .models import PPP
+admin.site.register(PPP)
+
+
+
+
+3.python manage.py runserver
+http://127.0.0.1:8000/admin/
+
+-------------------------------------
+1. startproject
+2. startapp
+3. include app in INSTALLED_APPS (settings)
+4. specify database in settings
+5. migrate
+6. define models
+7. makemigrations -> migrate
+8. create views
+9. create templates -> htmls
+10. urls
+
+bonus
+1. create superuser
+2. register model in admin.py
+         * python manage.py createsuperuser
+         * in admin.py -> 
+                           ** import model
+                           ** admin.site.register(model)
+3. go to admin page and do stuff there
+
+
+FORMS:
+
+1. create forms.py inside the app folder
+2. in forms.py,
+
+    from django import forms
+    from .models import ...
+
+    create a:
+    class CategoryForm(forms.ModelForm) # 'Category' - just a name
+        class Meta:
+            model = Category
+            fields = '__all__'
+
+3. in views.py, create add_category_view
+    from .forms import CategoryForm
+
+    - define what happens when request.method == 'GET' 
+        # GET
+            category_form = CategoryForm()
+            context = {'form': category_form}
+            return render(request, 'add_category.html', context)
+        * created empty form (without any data attached to it)
+        * sent form with context
+    - define what happens when request.method == 'POST'
+       # POST 
+            if request.method == 'POST':
+                data = request.POST
+                filled_form = CategoryForm(data)
+                filled_form.save()
+
+        * grab the data from request.POST dictionary
+        * attached the data to the filled_form (CategoryForm)
+        * saved data into the database by using filled_form.save()
+
+4. inside add_category.html, add form with method = 'post'
+        <form method="post">
+            {%csrf_token%}
+            {{form}}
+            <button type="submit"> submit </button>
+        </form>
