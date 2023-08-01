@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import Dish from './Dish';
-import './styles.css';
+import '../styles.css';
 
 
-const DishList = () => {
+const MenuPage = () => {
   const [dishes, setDishes] = useState([]);
 
   useEffect(() => {
@@ -25,9 +25,9 @@ const DishList = () => {
   }, []);
 
   return (
-    <div>
+    <div className="m-4">
       <h1>Dish List</h1>
-      <div className="divide-y divide-gray-100">
+      <div className="divide-y divide-gray-100 ">
         {dishes.map((dish) => (
           // Use the 'Dish' component for each dish
           <Dish key={dish.id} {...dish} />
@@ -37,4 +37,4 @@ const DishList = () => {
   );
 };
 
-export default DishList;
+export default MenuPage;
