@@ -1,6 +1,7 @@
 import '../styles.css';
 import OrdersPage from './OrdersPage';
 import MenuPage from './MenuPage';
+import { Button } from '@mui/material';
 
 
 const SideMenu = ({page, setPage}) => {
@@ -9,8 +10,9 @@ const SideMenu = ({page, setPage}) => {
 
     return (
         <div>
-            <p id='orders' onClick={() => setPage('orders')}>Orders</p>
-            <p id='menu' onClick={() => setPage('menu')}>Menu</p>
+            <Button onClick={() => setPage('orders')}>Orders</Button>
+            <Button onClick={() => setPage('menu')}>Menu</Button>
+            <Button onClick={() => setPage('test')}>Test</Button>
         </div>
     )
 }

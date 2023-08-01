@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Dish from './Dish';
 import '../styles.css';
+import List from '@mui/material/List';
 
 
 const MenuPage = () => {
@@ -27,12 +28,12 @@ const MenuPage = () => {
   return (
     <div className="m-4">
       <h1>Dish List</h1>
-      <div className="divide-y divide-gray-100 ">
+      <List>
         {dishes.map((dish) => (
           // Use the 'Dish' component for each dish
           <Dish key={dish.id} {...dish} />
         ))}
-      </div>
+      </List>
     </div>
   );
 };
