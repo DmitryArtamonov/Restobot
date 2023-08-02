@@ -1,10 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import Dish from './Dish';
-import '../styles.css';
-import List from '@mui/material/List';
+import { DataGrid } from '@mui/x-data-grid';
 
+const columns = [
+  { field: 'picture', headerName: 'Img', width:70, minWidth: 70,
+    renderCell: (params) => <img src={params.value} width={50}/>, // renderCell will render the component
+  },
+  { field: 'name', headerName: 'Name', flex: 5, minWidth: 100 },
+  { field: 'price', headerName: 'Price', type: 'number', flex: 2, minWdth: 70 },
+];
 
-const MenuPage = () => {
+function MenuPage() {
+
   const [dishes, setDishes] = useState([]);
 
   useEffect(() => {
@@ -25,17 +31,23 @@ const MenuPage = () => {
     fetchDishes();
   }, []);
 
+  console.log(dishes)
+
   return (
-    <div className="m-4">
-      <h1>Dish List</h1>
-      <List>
-        {dishes.map((dish) => (
-          // Use the 'Dish' component for each dish
-          <Dish key={dish.id} {...dish} />
-        ))}
-      </List>
+    <div style={{ height: 400, width: '100%' }}>
+      <DataGrid
+        rows={dishes}
+        columns={columns}
+        initialState={{
+          pagination: {
+            paginationModel: { page: 0, pageSize: 5 },
+          },
+        }}
+        pageSizeOptions={[20, 50, 100]}
+        checkboxSelection
+      />
     </div>
   );
-};
+}
 
 export default MenuPage;
