@@ -4,12 +4,15 @@ from rest_framework.permissions import AllowAny
 
 from .models import (
     Restaurant,
+    Group,
     Dish
 )
 
 from .serializers import (
     RestaurantSerializer,
-    DishSerializer
+    GroupSerializer,
+    DishSerializer,
+    DishCreateSerializer
 )
 
 
@@ -24,6 +27,11 @@ class DishDetailView(generics.RetrieveAPIView):
 
 
 class DishCreateView(generics.CreateAPIView):
-    serializer_class = DishSerializer
+    serializer_class = DishCreateSerializer
     queryset = Dish.objects.all()
     permission_classes = (AllowAny,)
+
+
+class GroupListView(generics.ListAPIView):
+    serializer_class = GroupSerializer
+    queryset = Group.objects.all()

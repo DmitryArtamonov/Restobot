@@ -34,7 +34,7 @@ class Dish(models.Model):
     picture = models.ImageField(blank=True, null=True)
     price = models.FloatField()
     group = models.ForeignKey(Group, blank=True, null=True, on_delete=models.CASCADE, related_name='group')
-    categories = models.ManyToManyField(Category)
+    categories = models.ManyToManyField(Category, blank=True)
 
     def __str__(self):
         return self.name

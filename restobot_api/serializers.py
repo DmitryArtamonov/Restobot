@@ -23,3 +23,10 @@ class DishSerializer(serializers.ModelSerializer):
 
     def get_group(self, obj):
         return GroupSerializer(obj.group.all()).data
+
+
+class DishCreateSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Dish
+        fields = ('name', 'restaurant', 'description', 'picture', 'price', 'group', 'categories')
