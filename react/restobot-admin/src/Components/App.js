@@ -1,24 +1,24 @@
-import React, { useEffect, useState } from 'react';
-import SideMenu from './SideMenu';
-import '../styles.css';
-import MainWindow from './MainWindow';
-import OrdersPage from './OrdersPage';
-import MenuPage from './MenuPage';
-import ExampleComponent from './ExampleComponent';
+import React, { useEffect, useState } from "react";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import NavBar from "./NavBar";
+import MainWindow from "./MainWindow";
+import OrdersPage from "./OrdersPage";
+import MenuPage from "./MenuPage";
+import ExampleComponent from "./ExampleComponent";
 
 const App = () => {
+    return (
+        <BrowserRouter>
+            <NavBar />
+            <Routes>
+                <Route exact path="/" element={<OrdersPage />} />
+                <Route path="/orders" element={<OrdersPage />} />
+                <Route path="/menu" element={<MenuPage />} />
+                <Route path="/test" element={<ExampleComponent />} />
 
-  const [page, setPage] = useState('menu')
-
-
-
-
-  return (
-    <div className='flex' >
-      <SideMenu page={page} setPage={setPage}/>
-      <MainWindow page={page}/>
-    </div>
-  );
+            </Routes>
+        </BrowserRouter>
+    );
 };
 
 export default App;
