@@ -11,7 +11,7 @@ class RestaurantSerializer(serializers.ModelSerializer):
 class GroupSerializer(serializers.ModelSerializer):
     class Meta:
         model = Group
-        fields = ('id', 'name')
+        fields = ('id', 'restaurant', 'name')
 
 
 class DishSerializer(serializers.ModelSerializer):
@@ -30,3 +30,8 @@ class DishCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Dish
         fields = ('name', 'restaurant', 'description', 'picture', 'price', 'group', 'categories')
+
+
+class DishDeleteSerializer(serializers.Serializer):
+    class Meta:
+        pass

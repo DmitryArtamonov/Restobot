@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
+import { Container, Button } from "@mui/material";
+import { Link } from "react-router-dom";
 import fetchApi from "../utils/fetch-api";
+
+import { AddGroup } from "./AddGroup";
 
 const columns = [
     {
@@ -17,7 +21,15 @@ const columns = [
         minWidth: 100,
         renderCell: (params) => (params.value ? params.value.name : null),
     },
-    { field: "name", headerName: "Name", flex: 5, minWidth: 100 },
+    {
+        field: "name",
+        headerName: "Name",
+        flex: 5,
+        minWidth: 100,
+        renderCell: (params) => (
+            <Link to={"/dish/" + params.row.id}>{params.row.name}</Link>
+        ),
+    },
     {
         field: "price",
         headerName: "Price",
@@ -29,47 +41,58 @@ const columns = [
 
 function MenuPage() {
     const [dishes, setDishes] = useState();
+    const [addCategory, setAddCategory] = useState(false);
 
     useEffect(() => {
-      async function fetchDishes() {
-        const data = await fetchApi('dishes/1');
-      setDishes(data)
-      }
+        async function fetchDishes() {
+            const data = await fetchApi("dishes/1");
+            setDishes(data);
+        }
         fetchDishes();
-    },[]);      
-
-        // Create an asynchronous function to perform the GET request
-        // async function fetchDishes() {
-        //     try {
-        //         // Await the completion of the GET request and get the response
-        //         const response = await fetch(
-        //             "http://127.0.0.1:8000/api/dishes/1"
-        //         );
-        //         const data = await response.json();
-        //         // Update the 'dishes' state with the received data
-        //         setDishes(data);
-        //     } catch (error) {
-        //         console.error("Error fetching dishes:", error);
-        //     }
-        // }
-
-        // Call the asynchronous function to perform the GET request
+    }, []);
 
     return (
         <div style={{ height: 400, width: "100%" }}>
-            {dishes ? 
-            <DataGrid
-                rows={dishes}
-                columns={columns}
-                initialState={{
-                    pagination: {
-                        paginationModel: { page: 0, pageSize: 20 },
-                    },
-                }}
-                pageSizeOptions={[20, 50, 100]}
-                checkboxSelection
-            />
-            : <p>Loading...</p>}
+            <h3>Menu Page</h3>
+            <Container sx={{ display: "flex", justifyContent: "flex-end" }}>
+                <Link to="/add-dish">
+                    <Button sx={{ m: 1, mr: 0 }} variant="outlined">
+                        + Dish
+                    </Button>
+                </Link>
+                <Button
+                    sx={{ m: 1, mr: 0 }}
+                    variant="outlined"
+                    onClick={() => setAddCategory(!addCategory)}
+                >
+                    + Group
+                </Button>
+            </Container>
+
+            {addCategory && (
+                <Container >
+                    <AddGroup
+                        addCategory={addCategory}
+                        setAddCategory={setAddCategory}
+                    />
+                </Container>
+            )}
+
+            {dishes ? (
+                <DataGrid
+                    rows={dishes}
+                    columns={columns}
+                    initialState={{
+                        pagination: {
+                            paginationModel: { page: 0, pageSize: 20 },
+                        },
+                    }}
+                    pageSizeOptions={[20, 50, 100]}
+                    checkboxSelection
+                />
+            ) : (
+                <p>Loading...</p>
+            )}
         </div>
     );
 }

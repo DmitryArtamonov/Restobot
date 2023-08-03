@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import NavBar from "./NavBar";
-import MainWindow from "./MainWindow";
 import OrdersPage from "./OrdersPage";
 import MenuPage from "./MenuPage";
 import ExampleComponent from "./ExampleComponent";
+import DishDetails from "./DishDetails";
 
 const App = () => {
     return (
@@ -14,7 +14,9 @@ const App = () => {
                 <Route exact path="/" element={<OrdersPage />} />
                 <Route path="/orders" element={<OrdersPage />} />
                 <Route path="/menu" element={<MenuPage />} />
+                <Route path="/add-dish" element={<ExampleComponent />} />
                 <Route path="/test" element={<ExampleComponent />} />
+                <Route path="/dish/:dishId" element={<DishDetails />} />
 
             </Routes>
         </BrowserRouter>
