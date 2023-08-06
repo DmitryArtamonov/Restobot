@@ -28,7 +28,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'restobot_api.apps.RestobotApiConfig',
     'rest_framework',
-    'corsheaders'
+    'corsheaders',
+    'restobot_api.management.commands.bot'
 ]
 
 MIDDLEWARE = [

@@ -31,7 +31,7 @@ class Dish(models.Model):
     restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE, related_name='menu')
     name = models.CharField(max_length=200)
     description = models.TextField(blank=True, null=True)
-    picture = models.ImageField(blank=True, null=True, upload_to='dish_pictures/')
+    picture = models.ImageField(default='No_image.jpg', upload_to='dish_pictures/')
     price = models.FloatField()
     group = models.ForeignKey(Group, blank=True, null=True, on_delete=models.CASCADE, related_name='group')
     categories = models.ManyToManyField(Category, blank=True)
