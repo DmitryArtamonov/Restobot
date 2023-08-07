@@ -1,13 +1,15 @@
 from aiogram.types import InlineKeyboardButton
 from aiogram.utils.keyboard import InlineKeyboardBuilder
-from telegram_bot.classes.User import User
-
-'''
-Create a keyboard ander the dish photo to change amount: [-]...0...[+]
-'''
 
 
 def dish_keyboard(dish_id: int, amount: int):
+    """
+    Create an inline keyboard under the dish photo to change amount: [-]...0...[+]
+    :param dish_id: id of the item(dish)
+    :param amount: current amount in the cart
+    :return: inline keyboard
+    """
+
     builder = InlineKeyboardBuilder()
     builder.add(InlineKeyboardButton(
         text="-",
