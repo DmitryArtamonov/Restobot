@@ -1,10 +1,15 @@
 import asyncio
-import logging
 from aiogram import Bot, Dispatcher, types, F
+from aiogram.filters import StateFilter
+from aiogram.fsm.context import FSMContext
+from aiogram.fsm.state import StatesGroup, State, default_state
 from aiogram.types import FSInputFile, CallbackQuery, InputMediaPhoto
 from aiogram.filters.command import Command as aiCommand
 from aiogram.utils.keyboard import ReplyKeyboardBuilder, InlineKeyboardBuilder
 from django.core.management.base import BaseCommand
+from telegram_bot.keybords.order_button import order_button
+from telegram_bot.keybords.order_place_button import order_place_button
+
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
@@ -21,9 +26,16 @@ class Command(BaseCommand):
         dp = Dispatcher()
         restaurant = Restaraunt(1, 'aaa')
 
+        class FSMFillForm(StatesGroup):
+            order_name = State()
+            order_tel = State()
+            order_address = State()
+            order_comments = State()
+
+
         # Handling command /start
-        @dp.message(aiCommand("start"))
-        async def cmd_start(msg: types.Message):
+        @dp.message(aiCommand("start"), StateFilter(default_state))
+        async def cmd_start(msg: types.Message, state: FSMContext):
             User.new_user(msg.from_user.id)
             builder = ReplyKeyboardBuilder()
             builder.add(types.KeyboardButton(text='Menu'))
@@ -35,8 +47,9 @@ class Command(BaseCommand):
             )
 
         # Handling messages
-        @dp.message()
-        async def message_handler(msg: types.Message):
+        @dp.message(StateFilter(default_state))
+        async def message_handler(msg: types.Message, state: FSMContext):
+            total_message = None
             user = User.new_user(msg.from_user.id)  # get user or create new if not exists
             groups: list[str] = await restaurant.get_groups() #get groups
 
@@ -59,19 +72,19 @@ class Command(BaseCommand):
 
             # Cart handler
             elif msg.text == '🛒 Cart':
+                user.cart.clean_from_zeros()  # delete element with zero amount
                 cart_print = await user.cart.print()
                 for text, keyboard in cart_print:
-                    await msg.answer(text, reply_markup=keyboard)
-
-
-
+                    total_message = await msg.answer(text, reply_markup=keyboard)
+                user.cart.total_message = total_message
 
 
 
         # Dish buttons handler
 
-        @dp.callback_query()
-        async def dish_button_handler(clbck: CallbackQuery):
+        @dp.callback_query(StateFilter(default_state))
+        async def dish_button_handler(clbck: CallbackQuery, state: FSMContext):
+
             user = User.new_user(clbck.from_user.id)
             print ('user cart:', user.cart.items)
             data = clbck.data
@@ -97,11 +110,57 @@ class Command(BaseCommand):
 
                 else:   # if the message is text
                     text, new_keyboard = await user.cart.print_item(dish_id)
-                    print('edit text', text)
                     await clbck.message.edit_text(text, reply_markup=new_keyboard)
+                    new_total_text = await user.cart.print_total()
+                    if user.cart.total_message:
+                        await user.cart.total_message.edit_text(new_total_text, reply_markup=order_button())
+
+            elif 'order' in data:
+                print('order creation start')
+                await clbck.message.answer('Enter your name')
+                await state.set_state(FSMFillForm.order_name)
 
             await clbck.answer()
             # await bot.edit_message_reply_markup()
+
+
+        @dp.message(StateFilter(FSMFillForm.order_name))
+        async def input_name(msg: types.Message, state: FSMContext):
+            name = msg.text
+            user = User.new_user(msg.from_user.id)
+            user.cart.name = name
+            await msg.answer('Enter your phone number')
+            await state.set_state(FSMFillForm.order_tel)
+
+
+        @dp.message(StateFilter(FSMFillForm.order_tel))
+        async def input_name(msg: types.Message, state: FSMContext):
+            tel = msg.text
+            user = User.new_user(msg.from_user.id)
+            user.cart.tel = tel
+            await msg.answer('Enter delivery address')
+            await state.set_state(FSMFillForm.order_address)
+
+
+        @dp.message(StateFilter(FSMFillForm.order_address))
+        async def input_name(msg: types.Message, state: FSMContext):
+            address = msg.text
+            user = User.new_user(msg.from_user.id)
+            user.cart.address = address
+            await msg.answer('Enter comments')
+            await state.set_state(FSMFillForm.order_comments)
+
+
+        @dp.message(StateFilter(FSMFillForm.order_comments))
+        async def input_name(msg: types.Message, state: FSMContext):
+            comments = msg.text
+            user = User.new_user(msg.from_user.id)
+            user.cart.comments = comments
+            text = await user.cart.print_order()
+            print('order text:', text)
+            await msg.answer(text, reply_markup=order_place_button())
+
+
 
 
         # Start polling

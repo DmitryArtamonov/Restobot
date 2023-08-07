@@ -3,12 +3,28 @@ from restobot_api.models import Dish
 from asgiref.sync import sync_to_async
 from telegram_bot.keybords.dish_keyboard import dish_keyboard
 from telegram_bot.models_connectors.dish_model import get_dish
+from telegram_bot.keybords.order_button import order_button
 
 
 class Cart:
 
     def __init__(self):
         self.items = []
+        self.total_message = None  # the last message with total amount in a cart (needed for dynamic edit)
+        self.name = None
+        self.tel = None
+        self.address = None
+        self.comments = None
+
+
+    def clean_from_zeros(self):
+        """
+        Remove items with amount 0 from the cart items
+        :return:
+        """
+
+        self.items = [item for item in self.items if item['amount'] > 0]
+        return
 
     def get_item_amount(self, dish_id: int):
         """
@@ -41,8 +57,7 @@ class Cart:
                     item['amount'] = item['amount'] + amount
 
                     # if amount become 0 or less - remove item from the cart
-                    if item['amount'] <= 0:
-                        del self.items[index]
+                    if item['amount'] < 0:
                         item['amount'] = 0
 
                     print('item changed in a cart', item)
@@ -63,7 +78,7 @@ class Cart:
             print("Error in cart:", str(e))
             return f'Error in cart: {str(e)}'
 
-    async def print_item(self, dish_id):
+    async def print_item(self, index, dish_id):
         # Todo: эта фунция подразумевает, что в корзине может быть только одна позиция с каждым товаром.
         # Надо перестроить схему данных в Cart, чтобы это исправить и добавить id позиции в корзине
         """
@@ -73,7 +88,7 @@ class Cart:
         item = list(filter(lambda x: x['id'] == dish_id, self.items))[0]
         dish = await get_dish(dish_id)
         print('Got dish in Cart', dish)
-        text = f"{dish.name}\n{item['amount']} x {dish.price}: {item['amount'] * dish.price} NIS"
+        text = f"<u>{index}. {dish.name}:</u>\n{item['amount']} x {dish.price}.......{item['amount'] * dish.price} NIS"
         keyboard = dish_keyboard(item['id'], item['amount'])
 
         return text, keyboard
@@ -95,15 +110,13 @@ class Cart:
         print(self.items)
         data = []
 
-        for item in self.items:
-            text, keyboard = await self.print_item(item['id'])
-            # text = f"{item['name']}\n{item['amount']} x {item['price']}: {item['value']} NIS"
-            # keyboard = dish_keyboard(item['id'], item['amount'])
+        for index, item in enumerate(self.items, start=1):
+            text, keyboard = await self.print_item(index, item['id'])
             data.append((text, keyboard))
 
         if data:
             text = await self.print_total()
-            data.append((text, None))
+            data.append((text, order_button()))
 
         else:
             data.append(("Your cart is empty", None))
@@ -124,3 +137,39 @@ class Cart:
             value += item['amount'] * dish.price
 
         return {'amount': amount, 'value': value}
+
+
+    async def print_order(self):
+        """
+        create a text with all order info
+        :return:
+        """
+
+        text = ['<b>Your order:</b>', '']
+
+        for index, item in enumerate(self.items, start=1):
+            new_string = await self.print_item(index, item['id'])
+            text.append(new_string[0])
+
+        total = await self.print_total()
+        text.extend([
+            '',
+            total,
+            '',
+            f'<b>Name:</b> {self.name}',
+            f'<b>Tel:</b> {self.tel}',
+            '<b>Address:</b>',
+            self.address,
+            '<b>Comments:</b>',
+            self.comments
+            ])
+
+        text_str = '\n'.join(text)
+
+        return text_str
+
+
+
+
+
+
