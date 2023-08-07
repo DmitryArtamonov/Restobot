@@ -2,8 +2,8 @@ from functools import reduce
 from restobot_api.models import Dish
 from asgiref.sync import sync_to_async
 from telegram_bot.keybords.dish_keyboard import dish_keyboard
+from telegram_bot.models_connectors.dish_model import get_dish
 
-# TODO: Цена товара не должна храниться в Cart, т.к. она может измениться с момента добавления в корзину
 
 class Cart:
 
@@ -16,6 +16,7 @@ class Cart:
         :param dish_id:
         :return:
         """
+        # TODO: Update the func when data structure of Cart will be updated
 
         filtered = filter(lambda x: x['id'] == dish_id, self.items)  # filtering by id
         amount = reduce(lambda acc, y: acc + y['amount'], filtered, 0)  # sum of amounts
@@ -35,10 +36,8 @@ class Cart:
         print('edit_item started', 'id', dish_id, 'amount', amount)
         try:
             # if same item with same price already in cart, add amount
-            price = Dish.objects.filter(id=dish_id)[
-                0].price  # Temporaly. Later different prices for the same item can be added.
             for index, item in enumerate(self.items):
-                if item['id'] == dish_id and item['price'] == price:
+                if item['id'] == dish_id:
                     item['amount'] = item['amount'] + amount
 
                     # if amount become 0 or less - remove item from the cart
@@ -55,8 +54,7 @@ class Cart:
 
             # else: add to cart
             dish = Dish.objects.filter(id=dish_id)[0]  # get dish info from the model
-            new_item = {'id': dish_id, 'name': dish.name, 'amount': amount, 'price': dish.price,
-                        'value': amount * dish.price}
+            new_item = {'id': dish_id, 'amount': amount}
             self.items.append(new_item)
             print('new item in a cart', new_item)
             return new_item
@@ -65,7 +63,7 @@ class Cart:
             print("Error in cart:", str(e))
             return f'Error in cart: {str(e)}'
 
-    def print_item(self, dish_id):
+    async def print_item(self, dish_id):
         # Todo: эта фунция подразумевает, что в корзине может быть только одна позиция с каждым товаром.
         # Надо перестроить схему данных в Cart, чтобы это исправить и добавить id позиции в корзине
         """
@@ -73,12 +71,22 @@ class Cart:
         :return: tuple(text, keyboard)
         """
         item = list(filter(lambda x: x['id'] == dish_id, self.items))[0]
-        text = f"{item['name']}\n{item['amount']} x {item['price']}: {item['value']} NIS"
+        dish = await get_dish(dish_id)
+        print('Got dish in Cart', dish)
+        text = f"{dish.name}\n{item['amount']} x {dish.price}: {item['amount'] * dish.price} NIS"
         keyboard = dish_keyboard(item['id'], item['amount'])
 
         return text, keyboard
 
-    def print(self):
+    async def print_total(self):
+        """
+        Create a message with total amount and value
+        :return: str
+        """
+        total = await self.total()
+        return f"<b>Total: {total['amount']} items........{total['value']} NIS</b>"
+
+    async def print(self):
         """
         Create a cart page for user (text and buttons)
         :return:
@@ -88,26 +96,31 @@ class Cart:
         data = []
 
         for item in self.items:
-            text, keyboard = self.print_item(item['id'])
+            text, keyboard = await self.print_item(item['id'])
             # text = f"{item['name']}\n{item['amount']} x {item['price']}: {item['value']} NIS"
             # keyboard = dish_keyboard(item['id'], item['amount'])
             data.append((text, keyboard))
 
         if data:
-            total = self.total()
-            data.append((f"<b>Total: {total['amount']} items........{total['value']} NIS</b>", None))
+            text = await self.print_total()
+            data.append((text, None))
 
         else:
             data.append(("Your cart is empty", None))
 
         return data
 
-    def total(self):
+    async def total(self):
         """
         Count total amount of items and value of the cart
         :return: {'amount': int, 'value':float}
         """
-        amount = reduce(lambda acc, y: acc + y['amount'], self.items, 0)
-        value = reduce(lambda acc, y: acc + y['value'], self.items, 0)
 
-        return {'amount': amount, 'value':value}
+        amount = reduce(lambda acc, y: acc + y['amount'], self.items, 0)
+
+        value = 0
+        for item in self.items:
+            dish = await get_dish(item['id'])
+            value += item['amount'] * dish.price
+
+        return {'amount': amount, 'value': value}

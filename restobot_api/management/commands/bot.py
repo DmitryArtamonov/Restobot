@@ -59,7 +59,7 @@ class Command(BaseCommand):
 
             # Cart handler
             elif msg.text == '🛒 Cart':
-                cart_print = user.cart.print()
+                cart_print = await user.cart.print()
                 for text, keyboard in cart_print:
                     await msg.answer(text, reply_markup=keyboard)
 
@@ -96,12 +96,12 @@ class Command(BaseCommand):
                     await clbck.message.edit_media(image, reply_markup=new_keyboard)
 
                 else:   # if the message is text
-                    text = clbck.message.text
+                    text, new_keyboard = await user.cart.print_item(dish_id)
+                    print('edit text', text)
                     await clbck.message.edit_text(text, reply_markup=new_keyboard)
 
             await clbck.answer()
             # await bot.edit_message_reply_markup()
-
 
 
         # Start polling
