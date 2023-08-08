@@ -14,7 +14,7 @@ def menu_keyboard(categories: list[str]):
     for category in categories:
         builder.add(KeyboardButton(text=category))
     builder.add(KeyboardButton(text="🔙"))
-    builder.add(KeyboardButton(text="🛒 Cart"))
+    builder.add(KeyboardButton(text="Cart"))
 
     builder.adjust(2)
 

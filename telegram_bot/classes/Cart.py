@@ -3,6 +3,8 @@ from restobot_api.models import Dish
 from asgiref.sync import sync_to_async
 from telegram_bot.keybords.dish_keyboard import dish_keyboard
 from telegram_bot.models_connectors.dish_model import get_dish
+from telegram_bot.models_connectors.client_model import check_and_create_client
+from telegram_bot.models_connectors.order_model import create_order
 from telegram_bot.keybords.order_button import order_button
 
 
@@ -11,10 +13,13 @@ class Cart:
     def __init__(self):
         self.items = []
         self.total_message = None  # the last message with total amount in a cart (needed for dynamic edit)
+        self.user_tg_id = None
         self.name = None
         self.tel = None
         self.address = None
         self.comments = None
+        self.value = None
+
 
 
     def clean_from_zeros(self):
@@ -78,7 +83,7 @@ class Cart:
             print("Error in cart:", str(e))
             return f'Error in cart: {str(e)}'
 
-    async def print_item(self, index, dish_id):
+    async def print_item(self, dish_id):
         # Todo: эта фунция подразумевает, что в корзине может быть только одна позиция с каждым товаром.
         # Надо перестроить схему данных в Cart, чтобы это исправить и добавить id позиции в корзине
         """
@@ -88,7 +93,7 @@ class Cart:
         item = list(filter(lambda x: x['id'] == dish_id, self.items))[0]
         dish = await get_dish(dish_id)
         print('Got dish in Cart', dish)
-        text = f"<u>{index}. {dish.name}:</u>\n{item['amount']} x {dish.price}.......{item['amount'] * dish.price} NIS"
+        text = f"<u>{dish.name}:</u>\n{item['amount']} x {dish.price}.......{item['amount'] * dish.price} NIS"
         keyboard = dish_keyboard(item['id'], item['amount'])
 
         return text, keyboard
@@ -99,6 +104,7 @@ class Cart:
         :return: str
         """
         total = await self.total()
+        self.value = total['value']
         return f"<b>Total: {total['amount']} items........{total['value']} NIS</b>"
 
     async def print(self):
@@ -110,8 +116,8 @@ class Cart:
         print(self.items)
         data = []
 
-        for index, item in enumerate(self.items, start=1):
-            text, keyboard = await self.print_item(index, item['id'])
+        for item in self.items:
+            text, keyboard = await self.print_item(item['id'])
             data.append((text, keyboard))
 
         if data:
@@ -147,8 +153,8 @@ class Cart:
 
         text = ['<b>Your order:</b>', '']
 
-        for index, item in enumerate(self.items, start=1):
-            new_string = await self.print_item(index, item['id'])
+        for item in self.items:
+            new_string = await self.print_item(item['id'])
             text.append(new_string[0])
 
         total = await self.print_total()
@@ -167,6 +173,18 @@ class Cart:
         text_str = '\n'.join(text)
 
         return text_str
+
+
+    async def order_create(self, user_tg_id):
+        self.user_tg_id = user_tg_id
+        client_id = await check_and_create_client(user_tg_id, self.name)
+        await create_order(self, client_id)
+
+
+
+
+
+
 
 
 

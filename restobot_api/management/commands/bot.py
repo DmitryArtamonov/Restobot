@@ -13,6 +13,7 @@ from telegram_bot.keybords.order_place_button import order_place_button
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
+
         from restobot_api.models import Group
         from telegram_bot.classes.User import User
         from .config_reader import config
@@ -21,21 +22,23 @@ class Command(BaseCommand):
         from telegram_bot.keybords.menu_keyboard import menu_keyboard
 
         self.stdout.write(self.style.SUCCESS('Command executed successfully'))
-
         bot = Bot(token=config.bot_token.get_secret_value(), parse_mode="HTML")
         dp = Dispatcher()
         restaurant = Restaraunt(1, 'aaa')
-
         class FSMFillForm(StatesGroup):
             order_name = State()
             order_tel = State()
             order_address = State()
             order_comments = State()
+            order_placement = State()
+
 
 
         # Handling command /start
         @dp.message(aiCommand("start"), StateFilter(default_state))
         async def cmd_start(msg: types.Message, state: FSMContext):
+            print('smbd said /start')
+            await state.clear()
             User.new_user(msg.from_user.id)
             builder = ReplyKeyboardBuilder()
             builder.add(types.KeyboardButton(text='Menu'))
@@ -49,6 +52,7 @@ class Command(BaseCommand):
         # Handling messages
         @dp.message(StateFilter(default_state))
         async def message_handler(msg: types.Message, state: FSMContext):
+            print('new message', msg.text)
             total_message = None
             user = User.new_user(msg.from_user.id)  # get user or create new if not exists
             groups: list[str] = await restaurant.get_groups() #get groups
@@ -62,6 +66,7 @@ class Command(BaseCommand):
             elif msg.text in groups:
                 dishes: list[dict] = await restaurant.get_dishes(msg.text)
                 for dish in dishes:
+                    print('printing dish:', dish['name'])
                     image = FSInputFile(f"media/{dish['picture']}")
                     text = f"<b>{dish['name']}</b> \n{dish['price']} NIS"
 
@@ -71,7 +76,7 @@ class Command(BaseCommand):
                         image, caption=text, reply_markup=keyboard)
 
             # Cart handler
-            elif msg.text == '🛒 Cart':
+            elif "Cart" in msg.text:
                 user.cart.clean_from_zeros()  # delete element with zero amount
                 cart_print = await user.cart.print()
                 for text, keyboard in cart_print:
@@ -134,7 +139,7 @@ class Command(BaseCommand):
 
 
         @dp.message(StateFilter(FSMFillForm.order_tel))
-        async def input_name(msg: types.Message, state: FSMContext):
+        async def input_tel(msg: types.Message, state: FSMContext):
             tel = msg.text
             user = User.new_user(msg.from_user.id)
             user.cart.tel = tel
@@ -143,7 +148,7 @@ class Command(BaseCommand):
 
 
         @dp.message(StateFilter(FSMFillForm.order_address))
-        async def input_name(msg: types.Message, state: FSMContext):
+        async def input_address(msg: types.Message, state: FSMContext):
             address = msg.text
             user = User.new_user(msg.from_user.id)
             user.cart.address = address
@@ -152,20 +157,32 @@ class Command(BaseCommand):
 
 
         @dp.message(StateFilter(FSMFillForm.order_comments))
-        async def input_name(msg: types.Message, state: FSMContext):
+        async def input_comments(msg: types.Message, state: FSMContext):
             comments = msg.text
             user = User.new_user(msg.from_user.id)
             user.cart.comments = comments
             text = await user.cart.print_order()
             print('order text:', text)
-            await msg.answer(text, reply_markup=order_place_button())
+            await msg.answer(text, reply_markup=order_place_button())   # print order info and order button
+            await state.set_state(FSMFillForm.order_placement)
 
 
+        @dp.callback_query(StateFilter(FSMFillForm.order_placement))
+        async def place_order(clbck: CallbackQuery, state: FSMContext):
+            user_id = clbck.from_user.id
+            user = User.new_user(user_id)
+            if clbck.data == 'order_place':
+                await user.cart.order_create(user_id)
+                await clbck.message.answer("Thank you! Your order is sent. We'll answer you soon")
 
 
         # Start polling
         async def main():
-            await bot.delete_webhook(drop_pending_updates=True)  # deleting pending messages
+            print('Start polling')
+            await bot.delete_webhook(drop_pending_updates=True) # deleting pending messages
             await dp.start_polling(bot)
+
+
+
 
         asyncio.run(main())
