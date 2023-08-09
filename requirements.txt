@@ -10,7 +10,7 @@ build==0.10.0
 CacheControl==0.12.14
 certifi==2023.7.22
 charset-normalizer==3.2.0
-cleo==2.0.1pip install -U --pre aiogram -r requirements.txt
+cleo==2.0.1
 colorama==0.4.6
 crashtest==0.4.1
 distlib==0.3.7
