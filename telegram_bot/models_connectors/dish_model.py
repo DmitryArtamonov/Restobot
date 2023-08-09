@@ -10,12 +10,12 @@ def get_dish(id):
     :return: dish
     """
     try:
-        dish = Dish.objects.filter(id=id)[0]
+        dish = Dish.objects.filter(id=id)
         if not dish:
             raise ValueError (f'Dish id{id} not found in Dish model')
-        print('Got dish', dish)
-        print('Dish price:', dish.price)
-        return dish
+        print('Got dish', dish[0])
+        print('Dish price:', dish[0].price)
+        return dish[0]
 
     except Exception as e:
         return f'Error in get_dish: {e}'

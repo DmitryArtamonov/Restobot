@@ -77,10 +77,10 @@ WSGI_APPLICATION = 'Restobot.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'mbutoikm',
-        'USER': 'mbutoikm',
-        'PASSWORD': 'HjpDfN5so9QfrzW3Xky4Ca6ny3D-vNaH',
-        'HOST': 'surus.db.elephantsql.com',
+        'NAME': 'restobot',
+        'USER': 'restobot_user',
+        'PASSWORD': 'gD4OzNlLWOzGUAiLFuKy3cIx9e79hnl3',
+        'HOST': 'dpg-cj9qob9duelc73dijr3g-a.oregon-postgres.render.com',
         'PORT': '5432',
     }
 }
