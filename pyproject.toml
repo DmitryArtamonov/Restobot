@@ -10,6 +10,7 @@ python = "^3.11"
 dj-database-url = "^2.0.0"
 psycopg2-binary = "^2.9.7"
 gunicorn = "^21.2.0"
+pydantic = "^2.1.1"
 
 
 [build-system]
