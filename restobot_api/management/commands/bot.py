@@ -1,11 +1,11 @@
 import asyncio
-from aiogram import Bot, Dispatcher, types, F
+from aiogram import Bot, Dispatcher, types
 from aiogram.filters import StateFilter
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State, default_state
 from aiogram.types import FSInputFile, CallbackQuery, InputMediaPhoto
 from aiogram.filters.command import Command as aiCommand
-from aiogram.utils.keyboard import ReplyKeyboardBuilder, InlineKeyboardBuilder
+from aiogram.utils.keyboard import ReplyKeyboardBuilder
 from django.core.management.base import BaseCommand
 from telegram_bot.keybords.order_button import order_button
 from telegram_bot.keybords.order_place_button import order_place_button
@@ -14,9 +14,8 @@ from telegram_bot.keybords.order_place_button import order_place_button
 class Command(BaseCommand):
     def handle(self, *args, **options):
 
-        from restobot_api.models import Group
         from telegram_bot.classes.User import User
-        from .config_reader import config
+        from restobot_api.utils.config_reader import config
         from .restaraunt import Restaraunt
         from telegram_bot.keybords.dish_keyboard import dish_keyboard
         from telegram_bot.keybords.menu_keyboard import menu_keyboard

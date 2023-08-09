@@ -1,7 +1,5 @@
 from pathlib import Path
 from restobot_api.custom_storage import CustomMediaStorage
-from restobot_api.utils.config_reader import config
-import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -11,16 +9,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('SECRET_KEY', default='your secret key')
+SECRET_KEY = 'django-insecure-d@pzt*as7^tkfkmiq@4-3p15_5xs!kz4n8#nrdj1k&qpx)8lk_'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = 'RENDER' not in os.environ
+DEBUG = True
 
 ALLOWED_HOSTS = []
 
-RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
-if RENDER_EXTERNAL_HOSTNAME:
-    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
 
 # Application definition
 
@@ -77,25 +72,13 @@ WSGI_APPLICATION = 'Restobot.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'mbutoikm',
-        'USER': 'mbutoikm',
-        'PASSWORD': 'HjpDfN5so9QfrzW3Xky4Ca6ny3D-vNaH',
-        'HOST': 'surus.db.elephantsql.com',
+        'NAME': 'Restobot',
+        'USER': 'postgres',
+        'PASSWORD': '123',
+        'HOST': 'localhost',
         'PORT': '5432',
     }
 }
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'Restobot_local',
-#         'USER': 'postgres',
-#         'PASSWORD': '123',
-#         'HOST': 'localhost',
-#         'PORT': '5433',
-#     }
-# }
-
 
 
 # Password validation

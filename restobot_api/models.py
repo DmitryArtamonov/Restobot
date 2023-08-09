@@ -44,6 +44,9 @@ class Client(models.Model):
     name = models.CharField(max_length=100)
     telegram_id = models.IntegerField(null=True, unique=True)
 
+    def __str__(self):
+        return self.name
+
 
 class Order(models.Model):
     STATUS_CHOICES = [
@@ -56,12 +59,15 @@ class Order(models.Model):
     number = models.CharField(max_length=20)  # number for restaurant, prefix can be added
     client = models.ForeignKey(Client, null=True, on_delete=models.SET_NULL, related_name='orders')
     restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE, related_name='orders')
-    delivery_address = models.CharField(500, null=True, blank=True)
-    phone_number = models.CharField(30, null=True, blank=True)
-    comments = models.CharField(500, null=True, blank=True)
+    delivery_address = models.CharField(max_length=500, null=True, blank=True)
+    phone_number = models.CharField(max_length=30, null=True, blank=True)
+    comments = models.CharField(max_length=500, null=True, blank=True)
     creation_time = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='new')
     value = models.FloatField()
+
+    def __str__(self):
+        return self.number
 
 
 class Order_item(models.Model):
@@ -70,3 +76,6 @@ class Order_item(models.Model):
     dish_name = models.CharField(max_length=200)
     amount = models.IntegerField()
     price = models.FloatField()
+
+    def __str__(self):
+        return self.dish_name
