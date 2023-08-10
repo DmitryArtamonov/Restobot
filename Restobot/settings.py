@@ -143,8 +143,6 @@ if not DEBUG:
     # and creating unique names for each version so they can safely be cached forever.
     STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-
-
 # Set the custom storage class for media files
 MEDIA_ROOT = BASE_DIR / 'media'  # Change 'media' to the desired folder name
 MEDIA_URL = '/media/'  # Change '/media/' to the desired URL path
