@@ -19,6 +19,7 @@ python-dotenv = "^1.0.0"
 requests = "^2.31.0"
 djangorestframework = "^3.14.0"
 django-cors-headers = "^4.2.0"
+whitenoise = {extras = ["brotli"], version = "^6.5.0"}
 
 
 [build-system]
