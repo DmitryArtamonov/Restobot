@@ -1,5 +1,3 @@
-from restobot_api.models import Group
-from asgiref.sync import sync_to_async
 from telegram_bot.models_connectors.dish_model import get_dishes
 from telegram_bot.models_connectors.group_model import get_groups
 

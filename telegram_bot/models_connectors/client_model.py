@@ -26,3 +26,17 @@ def check_and_create_client(telegram_id: int, name:str):
     except Exception as e:
         return f'Error in check/create a client: {e}'
 
+
+@sync_to_async
+def get_client_by_tg_id(telegram_id: int):
+    try:
+        client = Client.objects.filter(telegram_id=telegram_id)
+        if client:
+            return client[0]
+        else:
+            raise (Exception, 'Client not found in DB')
+
+    except Exception as e:
+        return f'Error in get_client: {e}'
+
+

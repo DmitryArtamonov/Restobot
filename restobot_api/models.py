@@ -44,6 +44,7 @@ class Client(models.Model):
     name = models.CharField(max_length=100)
     telegram_id = models.IntegerField(null=True, unique=True)
 
+
     def __str__(self):
         return self.name
 
@@ -79,3 +80,20 @@ class Order_item(models.Model):
 
     def __str__(self):
         return self.dish_name
+
+
+class Chat(models.Model):
+
+    AUTHOR_CHOICES = [
+        ('c', 'Client'),
+        ('r', 'Restaurant'),
+    ]
+
+    author = models.CharField(max_length=1, choices=AUTHOR_CHOICES)
+    client = models.ForeignKey(Client, on_delete=models.CASCADE)
+    restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE)
+    creation_time = models.DateTimeField(auto_now_add=True)
+    message = models.TextField()
+    is_new = models.BooleanField(default=True)
+
+

@@ -5,6 +5,7 @@ class RestobotApiConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'restobot_api'
 
-    def ready(self):
-        from django.core.management import call_command
-        call_command('bot')
+    # Bot autorun:
+    # def ready(self):
+    #     from django.core.management import call_command
+    #     call_command('bot')

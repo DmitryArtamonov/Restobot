@@ -1,5 +1,6 @@
 from asgiref.sync import sync_to_async
 from restobot_api.models import Order, Order_item, Client, Restaurant, Dish
+from .restaurant_model import get_restaurant
 
 
 @sync_to_async
@@ -11,7 +12,7 @@ def create_order(cart, user_id):
 
     try:
         client = Client.objects.filter(id=user_id)[0]
-        restaurant = Restaurant.objects.filter(id=1)[0]
+        restaurant = get_restaurant(1)
         new_order = Order()
         new_order.number = '100'
         new_order.client = client
