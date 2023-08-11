@@ -1,4 +1,7 @@
 from asgiref.sync import sync_to_async
+from django.db.models import Q
+from django.forms import model_to_dict
+
 from restobot_api.models import Dish
 
 
@@ -20,3 +23,15 @@ def get_dish(id):
     except Exception as e:
         return f'Error in get_dish: {e}'
 
+
+@sync_to_async
+def get_dishes(restaurant_id: int, group: str):
+    """
+    Find dishes by restaurant and group
+    :param restaurant_id:
+    :param group:
+    :return: list of dishes as dict
+    """
+    dishes_query = Dish.objects.filter(Q(restaurant=restaurant_id) & Q(group__name=group))
+    dishes = [model_to_dict(instance) for instance in dishes_query]
+    return dishes
