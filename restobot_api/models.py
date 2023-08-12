@@ -96,4 +96,9 @@ class Chat(models.Model):
     message = models.TextField()
     is_new = models.BooleanField(default=True)
 
+    def __str__(self):
+        name = self.message if len(self.message) <=20 else self.message[:17] + '...'
+        return name
+
+
 

@@ -93,7 +93,8 @@ class Cart:
         item = list(filter(lambda x: x['id'] == dish_id, self.items))[0]
         dish = await get_dish(dish_id)
         print('Got dish in Cart', dish)
-        text = f"<u>{dish.name}:</u>\n{item['amount']} x {dish.price}.......{item['amount'] * dish.price} NIS"
+        text = f"<u>{dish.name}:</u>\n{item['amount']} x {dish.price}......." \
+               f"{round(item['amount'] * dish.price, 2)} NIS"
         keyboard = dish_keyboard(item['id'], item['amount'])
 
         return text, keyboard
@@ -142,7 +143,7 @@ class Cart:
             dish = await get_dish(item['id'])
             value += item['amount'] * dish.price
 
-        return {'amount': amount, 'value': value}
+        return {'amount': amount, 'value': round(value, 2)}
 
 
     async def print_order(self):

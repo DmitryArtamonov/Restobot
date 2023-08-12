@@ -19,9 +19,13 @@ from telegram_bot.keybords.menu_keyboard import menu_keyboard
 from telegram_bot.keybords.home_keyboard import home_keyboard
 from telegram_bot.keybords.buttons import home_text, cart_text, menu_text, chat_text
 
+from .message_listener import message_listener
+
 bot = Bot(token=config.bot_token.get_secret_value(), parse_mode="HTML")
 dp = Dispatcher()
 restaurant = Restaraunt(1, 'aaa')
+
+
 
 
 # Setting States
@@ -252,7 +256,11 @@ async def place_order(clbck: CallbackQuery, state: FSMContext):
 async def main():
     print('Start polling')
     await bot.delete_webhook(drop_pending_updates=True)  # deleting pending messages
-    await dp.start_polling(bot)
+
+    # run polling and message listener in parallel
+    polling_task = asyncio.create_task(dp.start_polling(bot))
+    message_listener_task = asyncio.create_task(message_listener(bot))
+    await asyncio.gather(polling_task, message_listener_task)
 
 
 def start_bot():
