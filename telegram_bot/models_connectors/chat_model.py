@@ -3,6 +3,7 @@ from asgiref.sync import sync_to_async
 from restobot_api.models import Chat
 from .client_model import get_client_by_tg_id
 from .restaurant_model import get_restaurant
+from django.db import close_old_connections
 
 
 @sync_to_async()
@@ -23,6 +24,8 @@ def check_new_messages():
 
         except Exception as e:
             print('Error check_new_message', e)
+            close_old_connections()
+            return e
 
 
 
