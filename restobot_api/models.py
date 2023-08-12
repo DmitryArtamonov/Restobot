@@ -44,6 +44,17 @@ class Client(models.Model):
     name = models.CharField(max_length=100)
     telegram_id = models.IntegerField(null=True, unique=True)
 
+    # Todo: redo connection with client class:
+
+    # def __init__(self, first_name, last_name, username, telegram_id, *args, **kwargs):
+    #     super().__init__(*args, **kwargs)
+    #     telegram_id = telegram_id
+    #     if first_name or last_name:
+    #         self.name = f'{first_name} {last_name}'
+    #     elif username:
+    #         self.name = username
+    #     else:
+    #         self.name = f'Telegram user {telegram_id}'
 
     def __str__(self):
         return self.name
@@ -57,7 +68,7 @@ class Order(models.Model):
         ('done', 'Done')
     ]
 
-    number = models.CharField(max_length=20)  # number for restaurant, prefix can be added
+    number = models.IntegerField()
     client = models.ForeignKey(Client, null=True, on_delete=models.SET_NULL, related_name='orders')
     restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE, related_name='orders')
     delivery_address = models.CharField(max_length=500, null=True, blank=True)
@@ -83,7 +94,6 @@ class Order_item(models.Model):
 
 
 class Chat(models.Model):
-
     AUTHOR_CHOICES = [
         ('c', 'Client'),
         ('r', 'Restaurant'),
@@ -97,8 +107,5 @@ class Chat(models.Model):
     is_new = models.BooleanField(default=True)
 
     def __str__(self):
-        name = self.message if len(self.message) <=20 else self.message[:17] + '...'
+        name = self.message if len(self.message) <= 20 else self.message[:17] + '...'
         return name
-
-
-

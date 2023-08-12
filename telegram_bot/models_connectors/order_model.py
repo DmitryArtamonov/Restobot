@@ -11,10 +11,12 @@ def create_order(cart, user_id):
     """
 
     try:
+        print('order creation started')
         client = Client.objects.filter(id=user_id)[0]
-        restaurant = get_restaurant(1)
+        restaurant = Restaurant.objects.filter(id=1).first()
+        last_order = Order.objects.filter(restaurant__id=1).order_by('-number').first()
         new_order = Order()
-        new_order.number = '100'
+        new_order.number = last_order.number + 1
         new_order.client = client
         new_order.restaurant = restaurant
         new_order.delivery_address = cart.address
@@ -24,7 +26,7 @@ def create_order(cart, user_id):
         new_order.value = cart.value
 
         new_order.save()
-        print(f' new order created in database')
+        print(f'new order created in database')
 
         order_id = new_order.id
 
@@ -41,5 +43,6 @@ def create_order(cart, user_id):
 
 
     except Exception as e:
+        print(f'Error in create an order: {e}')
         return f'Error in create an order: {e}'
 

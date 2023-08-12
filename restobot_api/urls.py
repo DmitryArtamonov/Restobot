@@ -7,8 +7,10 @@ from .views import (
     DishUpdateView,
     DishDeleteView,
     GroupListView,
-    GroupCreateView
-
+    GroupCreateView,
+    OrdersListView,
+    OrderDetailView,
+    OrderUpdateView
 )
 
 urlpatterns = [
@@ -19,6 +21,8 @@ urlpatterns = [
     path('dish/get/<int:id>', DishDetailView.as_view(), name='dish_detail_api'),
     path('groups/new', GroupCreateView.as_view(), name='group_create_api'),
     path('groups/<int:restaurant_id>', GroupListView.as_view(), name='group_list_api'),
-
+    path('orders/<int:restaurant_id>', OrdersListView.as_view(), name='order_list_api'),
+    path('order/get/<int:pk>', OrderDetailView.as_view(), name='order_detail_api'),
+    path('order/update/<int:pk>', OrderUpdateView.as_view(), name='order_update_api'),
 ]
 

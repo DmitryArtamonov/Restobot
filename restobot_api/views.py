@@ -1,11 +1,13 @@
 from django.shortcuts import render
 from rest_framework import generics
 from rest_framework.permissions import AllowAny
+from rest_framework.response import Response
 
 from .models import (
     Restaurant,
     Group,
-    Dish
+    Dish,
+    Order
 )
 
 from .serializers import (
@@ -13,13 +15,18 @@ from .serializers import (
     GroupSerializer,
     DishSerializer,
     DishCreateSerializer,
-    DishDeleteSerializer
+    DishDeleteSerializer,
+    OrderSerializer,
+    OrderStatusUpdateSerializer
 )
 
 
 class DishListView(generics.ListAPIView):
     serializer_class = DishSerializer
-    queryset = Dish.objects.all()
+
+    def get_queryset(self):
+        restaurant_id = self.kwargs['restaurant_id']
+        return Dish.objects.filter(restaurant_id=restaurant_id)
 
 
 class DishDetailView(generics.RetrieveAPIView):
@@ -62,3 +69,34 @@ class GroupListView(generics.ListAPIView):
 class GroupCreateView(generics.CreateAPIView):
     serializer_class = GroupSerializer
     permission_classes = (AllowAny,)
+
+
+class OrdersListView(generics.ListAPIView):
+    serializer_class = OrderSerializer
+    queryset = Order.objects.all()
+
+    def get_queryset(self):
+        return Order.objects.order_by('-id')
+
+
+class OrderDetailView(generics.RetrieveAPIView):
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer
+    permission_classes = (AllowAny,)
+
+
+class OrderUpdateView(generics.UpdateAPIView):
+    queryset = Order.objects.all()
+    serializer_class = OrderStatusUpdateSerializer
+    permission_classes = (AllowAny,)
+
+    # def put(self, request, *args, **kwargs):
+    #     partial = kwargs.pop('partial', False)
+    #     instance = self.get_object()
+    #
+    #     # Serialize the request data, but only update the provided fields
+    #     serializer = self.get_serializer(instance, data=request.data, partial=partial)
+    #     serializer.is_valid(raise_exception=True)
+    #     self.perform_update(serializer)
+    #
+    #     return Response(serializer.data)

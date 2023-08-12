@@ -8,7 +8,7 @@ async def message_listener(bot: aiogram.Bot):
     Check for new messages from restaurants and print them
     :return:
     """
-    check_interval = 2  # check new message every ... sec
+    check_interval = 1000  # check new message every ... sec
     message_interval = 0.1 # send new message every ... sec (not to break TG limits if there are a lot of msgs)
     error_interval = 0.1 # Delay in seconds between retries if there is an error
     print('Start message listener')
