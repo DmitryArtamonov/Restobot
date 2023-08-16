@@ -2,6 +2,8 @@ from django.shortcuts import render
 from rest_framework import generics
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
+from django.http import HttpResponse
+from django.core.management import call_command
 
 from .models import (
     Restaurant,
@@ -100,3 +102,8 @@ class OrderUpdateView(generics.UpdateAPIView):
     #     self.perform_update(serializer)
     #
     #     return Response(serializer.data)
+
+
+def run_bot(request):
+    call_command('bot')
+    return HttpResponse("Bot command executed.")

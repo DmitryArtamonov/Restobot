@@ -10,7 +10,8 @@ from .views import (
     GroupCreateView,
     OrdersListView,
     OrderDetailView,
-    OrderUpdateView
+    OrderUpdateView,
+    run_bot
 )
 
 urlpatterns = [
@@ -24,5 +25,6 @@ urlpatterns = [
     path('orders/<int:restaurant_id>', OrdersListView.as_view(), name='order_list_api'),
     path('order/get/<int:pk>', OrderDetailView.as_view(), name='order_detail_api'),
     path('order/update/<int:pk>', OrderUpdateView.as_view(), name='order_update_api'),
+    path('run-bot/', run_bot, name='run_bot'),
 ]
 
