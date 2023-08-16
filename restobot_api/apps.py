@@ -6,6 +6,6 @@ class RestobotApiConfig(AppConfig):
     name = 'restobot_api'
 
     # Bot autorun:
-    def ready(self):
-        from django.core.management import call_command
-        call_command('bot')
+    # def ready(self):
+    #     from django.core.management import call_command
+    #     call_command('bot')
