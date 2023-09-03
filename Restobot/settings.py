@@ -1,4 +1,7 @@
 from pathlib import Path
+
+import dj_database_url
+
 from restobot_api.custom_storage import CustomMediaStorage
 from restobot_api.utils.config_reader import config
 import os
