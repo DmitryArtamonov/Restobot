@@ -201,8 +201,8 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
 # Set the custom storage class for media files
-MEDIA_ROOT = BASE_DIR / 'media'  # Change 'media' to the desired folder name
-MEDIA_URL = '/media/'  # Change '/media/' to the desired URL path
+# MEDIA_ROOT = BASE_DIR / 'media'  # Change 'media' to the desired folder name
+# MEDIA_URL = '/media/'  # Change '/media/' to the desired URL path
 
 # Use the custom storage class for media files
 # DEFAULT_FILE_STORAGE = 'restobot_api.custom_storage.CustomMediaStorage'
