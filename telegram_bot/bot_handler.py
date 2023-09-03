@@ -3,10 +3,9 @@ from .utils import clean_string
 from aiogram import Bot, Dispatcher, types, F
 from aiogram.filters import StateFilter
 from aiogram.fsm.context import FSMContext
-from aiogram.fsm.state import StatesGroup, State, default_state
+from aiogram.fsm.state import StatesGroup, State
 from aiogram.types import FSInputFile, CallbackQuery, InputMediaPhoto
 from aiogram.filters.command import Command as aiCommand
-from aiogram.utils.keyboard import ReplyKeyboardBuilder
 from telegram_bot.keybords.order_button import order_button
 from telegram_bot.keybords.order_place_button import order_place_button
 from telegram_bot.classes.User import User
@@ -20,8 +19,15 @@ from telegram_bot.keybords.home_keyboard import home_keyboard
 from telegram_bot.keybords.buttons import home_text, cart_text, menu_text, chat_text
 
 from .message_listener import message_listener
+from boto.s3.connection import S3Connection
+import os
 
-bot = Bot(token=config.bot_token.get_secret_value(), parse_mode="HTML")
+if 'bot_token' in os.environ:
+    bot_token = S3Connection(os.environ['bot_token'])
+else:
+    bot_token = config.bot_token.get_secret_value()
+
+bot = Bot(token=bot_token, parse_mode="HTML")
 dp = Dispatcher()
 restaurant = Restaraunt(1, 'aaa')
 
