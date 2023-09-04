@@ -3,6 +3,7 @@ from pathlib import Path
 import dj_database_url
 
 from restobot_api.custom_storage import CustomMediaStorage
+from django.core.files.storage import FileSystemStorage
 from restobot_api.utils.config_reader import config
 import os
 import secrets
