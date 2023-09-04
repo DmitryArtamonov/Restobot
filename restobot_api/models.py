@@ -1,6 +1,6 @@
 from django.db import models
 from django.core.files.storage import FileSystemStorage
-fs = FileSystemStorage(location="/media")
+# fs = FileSystemStorage(location="/media")
 
 class Restaurant(models.Model):
     name = models.CharField(max_length=50)
@@ -32,7 +32,8 @@ class Dish(models.Model):
     restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE, related_name='menu')
     name = models.CharField(max_length=200)
     description = models.TextField(blank=True, null=True)
-    picture = models.ImageField(default='No_image.jpg', storage=fs)
+    # picture = models.ImageField(default='No_image.jpg', storage=fs)
+    picture = models.ImageField(default='No_image.jpg', storage=FileSystemStorage)
     price = models.FloatField()
     group = models.ForeignKey(Group, blank=True, null=True, on_delete=models.CASCADE, related_name='group')
     categories = models.ManyToManyField(Category, blank=True)
