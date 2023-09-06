@@ -8,7 +8,6 @@ from restobot_api.utils.config_reader import config
 import os
 import secrets
 
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -52,8 +51,7 @@ INSTALLED_APPS = [
     'restobot_api.apps.RestobotApiConfig',
     'rest_framework',
     'corsheaders',
-    'restobot_api.management.commands.bot',
-    'storages',
+    'restobot_api.management.commands.bot'
 ]
 
 MIDDLEWARE = [
@@ -177,38 +175,20 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-# STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_ROOT = BASE_DIR / "staticfiles"
+STATIC_URL = 'static/'
 
-# S3 settings:
-AWS_LOCATION = 'static'
-AWS_ACCESS_KEY_ID ='AKIA6CXMYLVIE7MCZT5C'
-AWS_SECRET_ACCESS_KEY = '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'
-AWS_STORAGE_BUCKET_NAME ='restobot-img1'
-AWS_S3_CUSTOM_DOMAIN='%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
-AWS_S3_OBJECT_PARAMETERS = {
-     'CacheControl': 'max-age=86400',
+STORAGES = {
+    # Enable WhiteNoise's GZip and Brotli compression of static assets:
+    # https://whitenoise.readthedocs.io/en/latest/django.html#add-compression-and-caching-support
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+    # Add a 'default' storage configuration
+    "default": {
+        "BACKEND": "restobot_api.custom_storage.CustomMediaStorage",
+    },
 }
-
-STATICFILES_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),
-]
-STATIC_URL='https://%s/%s/' % (AWS_S3_CUSTOM_DOMAIN, AWS_LOCATION)
-ADMIN_MEDIA_PREFIX = STATIC_URL + 'admin/'
-STATICFILES_FINDERS = (
-    'django.contrib.staticfiles.finders.FileSystemFinder',
-    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-)
-AWS_DEFAULT_ACL = None
-
-# s3 public media settings
-PUBLIC_MEDIA_LOCATION = 'media'
-MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/{PUBLIC_MEDIA_LOCATION}/'
-DEFAULT_FILE_STORAGE = 'restobot_api.storage_backends.MediaStorage'
-
-# print('basedir:', BASE_DIR)
-# print('STATICFILES_DIRS:', STATICFILES_DIRS[0])
 
 # Don't store the original (un-hashed filename) version of static files, to reduce slug size:
 # https://whitenoise.readthedocs.io/en/latest/django.html#WHITENOISE_KEEP_ONLY_HASHED_FILES

@@ -33,7 +33,7 @@ class Dish(models.Model):
     name = models.CharField(max_length=200)
     description = models.TextField(blank=True, null=True)
     # picture = models.ImageField(default='No_image.jpg', storage=fs)
-    picture = models.ImageField(default='No_image.jpg', storage=FileSystemStorage)
+    picture = models.ImageField()
     price = models.FloatField()
     group = models.ForeignKey(Group, blank=True, null=True, on_delete=models.CASCADE, related_name='group')
     categories = models.ManyToManyField(Category, blank=True)
