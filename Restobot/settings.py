@@ -7,6 +7,9 @@ from django.core.files.storage import FileSystemStorage
 from restobot_api.utils.config_reader import config
 import os
 import secrets
+from dotenv import load_dotenv
+
+load_dotenv()  # take environment variables from .env.
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
