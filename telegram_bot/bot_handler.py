@@ -22,14 +22,14 @@ from .message_listener import message_listener
 from boto.s3.connection import S3Connection
 import os
 
-print(os.environ)
+print('BOT_TOKEN', os.environ['BOT_TOKEN'])
 
 # if 'bot_token' in os.environ:
 #     bot_token = S3Connection(os.environ['bot_token'])
 # else:
 #     bot_token = config.bot_token.get_secret_value()
 
-bot_token = os.environ['bot_token']
+bot_token = os.environ['BOT_TOKEN']
 
 bot = Bot(token=bot_token, parse_mode="HTML")
 dp = Dispatcher()
