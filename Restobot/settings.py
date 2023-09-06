@@ -4,7 +4,6 @@ import dj_database_url
 
 from restobot_api.custom_storage import CustomMediaStorage
 from django.core.files.storage import FileSystemStorage
-from restobot_api.utils.config_reader import config
 import os
 import secrets
 from dotenv import load_dotenv
@@ -185,8 +184,8 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # S3 settings:
 AWS_LOCATION = 'static'
-AWS_ACCESS_KEY_ID ='AKIA6CXMYLVIE7MCZT5C'
-AWS_SECRET_ACCESS_KEY = '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'
+AWS_ACCESS_KEY_ID = os.environ['AWS_ACCESS_KEY_ID']
+AWS_SECRET_ACCESS_KEY = os.environ['AWS_SECRET_ACCESS_KEY']
 AWS_STORAGE_BUCKET_NAME ='restobot-img1'
 AWS_S3_CUSTOM_DOMAIN='%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
 AWS_S3_OBJECT_PARAMETERS = {

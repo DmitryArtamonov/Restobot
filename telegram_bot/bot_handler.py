@@ -9,7 +9,6 @@ from aiogram.filters.command import Command as aiCommand
 from telegram_bot.keybords.order_button import order_button
 from telegram_bot.keybords.order_place_button import order_place_button
 from telegram_bot.classes.User import User
-from restobot_api.utils.config_reader import config
 from telegram_bot.classes.Restaraunt import Restaraunt
 
 from telegram_bot.models_connectors.chat_model import send_message
@@ -19,23 +18,13 @@ from telegram_bot.keybords.home_keyboard import home_keyboard
 from telegram_bot.keybords.buttons import home_text, cart_text, menu_text, chat_text
 
 from .message_listener import message_listener
-from boto.s3.connection import S3Connection
 import os
-
-print('BOT_TOKEN', os.environ['BOT_TOKEN'])
-
-# if 'bot_token' in os.environ:
-#     bot_token = S3Connection(os.environ['bot_token'])
-# else:
-#     bot_token = config.bot_token.get_secret_value()
 
 bot_token = os.environ['BOT_TOKEN']
 
 bot = Bot(token=bot_token, parse_mode="HTML")
 dp = Dispatcher()
 restaurant = Restaraunt(1, 'aaa')
-
-
 
 
 # Setting States
