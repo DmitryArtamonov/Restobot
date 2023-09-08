@@ -4,7 +4,7 @@ from aiogram import Bot, Dispatcher, types, F
 from aiogram.filters import StateFilter
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
-from aiogram.types import FSInputFile, CallbackQuery, InputMediaPhoto
+from aiogram.types import FSInputFile, CallbackQuery, InputMediaPhoto, URLInputFile
 from aiogram.filters.command import Command as aiCommand
 from telegram_bot.keybords.order_button import order_button
 from telegram_bot.keybords.order_place_button import order_place_button
@@ -20,12 +20,14 @@ from telegram_bot.keybords.buttons import home_text, cart_text, menu_text, chat_
 from .message_listener import message_listener
 import os
 
+from Restobot.config import config
+from telegram_bot.image_finder import image_finder
+
 bot_token = os.environ['BOT_TOKEN']
 
 bot = Bot(token=bot_token, parse_mode="HTML")
 dp = Dispatcher()
 restaurant = Restaraunt(1, 'aaa')
-
 
 # Setting States
 class FSMFillForm(StatesGroup):
@@ -136,7 +138,7 @@ async def menu_message_handler(msg: types.Message, state: FSMContext):
         dishes: list[dict] = await restaurant.get_dishes(msg.text)
         for dish in dishes:
             print('printing dish:', dish['name'])
-            image = FSInputFile(f"media/{dish['picture']}")
+            image = URLInputFile(image_finder(dish['picture']))
             text = f"<b>{dish['name']}</b> \n{dish['price']} NIS"
 
             keyboard = dish_keyboard(dish["id"], user.cart.get_item_amount(dish['id']))
