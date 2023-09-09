@@ -51,14 +51,14 @@ For Telegram users:
 * [Video Presentation](https://restobot-img1.s3.eu-central-1.amazonaws.com/static/media/Restobot_presentation.mp4)
 
 
-* [Github (Django Backend + Telegram module) 
+* [GitHub (Django Backend + Telegram module) 
 ](https://github.com/DmitryArtamonov/Restobot)
 
-* [Github (React Frontend)](https://github.com/DmitryArtamonov/Restobot_admin
+* [GitHub (React Frontend)](https://github.com/DmitryArtamonov/Restobot_admin
 ) 
 
 
-* [My Porfolio](https://dmitryartamonov.github.io/Portfolio/
+* [My Portfolio](https://dmitryartamonov.github.io/Portfolio/
 )
 
 **Contacts**

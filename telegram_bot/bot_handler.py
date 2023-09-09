@@ -86,10 +86,15 @@ async def menu_page(msg: types.Message, state: FSMContext):
     """Open Menu"""
     User.new_user(msg.from_user.id)  # get user or create new if not exists
     groups: list[str] = await restaurant.get_groups()  # get groups
-    keyboard = menu_keyboard(groups)
-    await msg.answer("Choose group", reply_markup=keyboard)
-    await state.set_state(FSMFillForm.menu)
-    print('set state Menu')
+    print('groups:', groups, type(groups))
+    if isinstance(groups, str):      # if groups return error
+        await msg.answer(f'Server error: {groups}. Try again later')
+        print('Error printing groups in bot', groups)
+    else:
+        keyboard = menu_keyboard(groups)
+        await msg.answer("Choose group", reply_markup=keyboard)
+        await state.set_state(FSMFillForm.menu)
+        print('set state Menu')
 
 
 # Handling "Chat" button

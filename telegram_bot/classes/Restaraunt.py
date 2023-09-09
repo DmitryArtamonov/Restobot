@@ -1,5 +1,5 @@
 from telegram_bot.models_connectors.dish_model import get_dishes
-from telegram_bot.models_connectors.group_model import get_groups
+from telegram_bot.models_connectors.group_model import get_groups_with_items
 
 class Restaraunt:
 
@@ -9,7 +9,7 @@ class Restaraunt:
         self.token = telegram_token
 
     async def get_groups(self):
-        return await get_groups(restaurant_id=self.id)
+        return await get_groups_with_items(restaurant_id=self.id)
 
     async def get_dishes(self, group: str):
         return await get_dishes(restaurant_id=self.id, group=group)
