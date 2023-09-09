@@ -126,7 +126,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'restobot',
         'USER': 'restobot_user',
-        'PASSWORD': 'gD4OzNlLWOzGUAiLFuKy3cIx9e79hnl3',
+        'PASSWORD': os.environ['DB_PASSWORD'],
         'HOST': 'dpg-cj9qob9duelc73dijr3g-a.oregon-postgres.render.com',
         'PORT': '5432',
     }
